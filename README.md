@@ -29,7 +29,12 @@ npm install @em/store
 export const states = new Map([
   ["firstName", "Pamela"],
   ["lastName", "Anderson"],
-  ["qualities": { hair: "blonde", eyes: "blue" }]]
+  [
+    "qualities": {
+      hair: "blonde",
+      eyes: "blue" 
+    }
+  ]
 ]);
 ```
 
@@ -42,16 +47,16 @@ export const pamToMitch = event("pamToMitch", () => {
   const [firstName, setFirstName] = state("firstName");
   const [lastName, setLastName] = state("lastName");
   const [qualities, setQualities] = state("qualities");
-  
+
   // change name to Mitch Buchannon
   setFirstName(() => "Mitch");
   setLastName(() => "Buchannon");
 
   // mutation-like immutability
-  setAttributes((draft) => {
-    draft.hair = "dark brown",
+  setQualities((draft) => {
+    draft.hair = "dark brown";
   });
-}
+});
 ```
 
 **Wrap your application in states provider**
@@ -67,7 +72,7 @@ function App() {
       states={states}
       persistent={true}
     >
-      <Main />
+      <LifeGuard />
     </Provider>
   );
 }
@@ -78,19 +83,18 @@ function App() {
 ```javascript
 import { withState } from "@em/store";
 
-withState(({
-  states: [firstName, lastName]
-}) => {
-  return (
-    <ul>
-      <li>{firstName}</li>
-      <li>{lastName}</li>
-      <button onClick={pamToMitch}/>
-    </ul>
-  );
-}, [
-  "firstName", "lastName"
-]);
+const LifeGuard = withState(
+  ({ states: [firstName, lastName] }) => {
+    return (
+      <ul>
+        <li>{firstName}</li>
+        <li>{lastName}</li>
+        <button onClick={pamToMitch} />
+      </ul>
+    );
+  },
+  ["firstName", "lastName"]
+);
 ```
 
 **Pamela Anderson becomes a man a Mitch Buchannon**
