@@ -83,7 +83,7 @@ function App() {
 ```javascript
 import { withState } from "@em/store";
 
-const LifeGuard = withState(
+export const LifeGuard = withState(
   ({ states: [firstName, lastName] }) => {
     return (
       <ul>
