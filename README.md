@@ -107,6 +107,7 @@ export const LifeGuard = withState(
 - [ ] Dev Tools
 - [ ] Middlewares
 - [ ] Record bug
+- [ ] Measuring performance
 
 ## Our Sponsors ❤️
 
