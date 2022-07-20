@@ -85,7 +85,12 @@ jobs:
         run: pnpm run compile
 
       - name: Publish package on NPM 📦
-        run: cd dist && npm publish --access public
+        run: |
+          cp README.md dist/
+          cp LICENSE dist/ 
+          cd dist
+          npm publish --access=public
+        shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION_TOKEN }}
 
