@@ -42,7 +42,7 @@ export const states = new Map([
 **Create an event function to track it**
 
 ```javascript
-import { event, state } from "@em/store";
+import { event, state } from "emstore";
 
 export const pamToMitch = event("pamToMitch", () => {
   const [firstName, setFirstName] = state("firstName");
@@ -63,7 +63,7 @@ export const pamToMitch = event("pamToMitch", () => {
 **Wrap your application in states provider**
 
 ```javascript
-import { Provider } from "@em/store";
+import { Provider } from "emstore";
 
 function App() {
   return (
@@ -82,7 +82,7 @@ function App() {
 **Use the states and events in component**
 
 ```javascript
-import { withState } from "@em/store";
+import { withState } from "emstore";
 
 export const LifeGuard = withState(
   ({ states: [firstName, lastName] }) => {
