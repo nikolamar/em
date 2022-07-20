@@ -37,11 +37,17 @@ const EventContext = React.createContext({} as any);
 export function event(name: string, handler: Handler) {
   if (name === "") {
     throw "Event name can't be empty string";
-  } else if (typeof name !== "string") {
+  }
+
+  if (typeof name !== "string") {
     throw "Event name is not a string";
-  } else if (em.event[name]) {
+  }
+
+  if (em.event[name]) {
     throw `This event name "${name}" already exist`;
-  } else if (typeof handler !== "function") {
+  }
+
+  if (typeof handler !== "function") {
     throw "Event handler is not a function";
   }
 
