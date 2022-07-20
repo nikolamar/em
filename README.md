@@ -102,6 +102,12 @@ export const LifeGuard = withState(
 
 <p>&nbsp;</p>
 
+## Todo
+
+- [ ] Dev Tools
+- [ ] Middlewares
+- [ ] Record bug
+
 ## Our Sponsors ❤️
 
 We have only but great appreciation to those who support this project. If you
