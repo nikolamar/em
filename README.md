@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/nikolamar/em/master/.assets/emlogo-effects.png)
+![alt text](https://raw.githubusercontent.com/nikolamar/em/master/.assets/em.png)
 
 <p>The Event Manager is a bare-bone simple state manager. <strong>It is very easy to use.</strong> It allows you to quickly prototype the app and easily manage and track your state. <strong>You are responsible</strong> to keep it simple and organized. Wrap your actions-events and easily log them, measure performance and use middlewares. <strong>Set state from anywhere</strong> outside, inside whatever.</p>
 
