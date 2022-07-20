@@ -15,7 +15,7 @@ const em: EM = {
   eventlog: false,
   statelog: false,
   persistent: false,
-  lineHeight: "1em",
+  lineHeight: "2em",
   valColor: TEAL500,
   eveColor: PINK500,
   keyColor: BLUE500,
