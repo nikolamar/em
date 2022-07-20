@@ -16,7 +16,7 @@
 All of this comes via a single dependency install.
 
 ```
-npm install @em/store
+npm install emstore
 ```
 
 <p>&nbsp;</p>

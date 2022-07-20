@@ -1,5 +1,5 @@
 {
-  "name": "@em/store",
+  "name": "emstore",
   "version": "0.1.0",
   "description": "Event Manager for React",
   "main": "lib/es5/index.js",
