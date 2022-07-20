@@ -1,7 +1,7 @@
 {
   "name": "em",
-  "version": "0.1.0",
-  "description": "Events Manager",
+  "version": "1.0.0",
+  "description": "Event Manager for React",
   "main": "src/index.ts",
   "repository": {
     "type": "git",
