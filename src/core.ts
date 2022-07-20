@@ -6,7 +6,7 @@ import type {
   EM,
   Handler,
   Callback,
-  StateProviderProps,
+  ProviderProps,
   CompWithStateProps,
 } from "./types";
 
@@ -24,8 +24,8 @@ const em: EM = {
 let timeoutStore = 0;
 let timeoutState = 0;
 
-let stateMapRef: Map<string, any>;
-let setStateRef: (newState: Map<string, any>) => void;
+let statesMapRef: Map<string, any>;
+let setStatesRef: (newState: Map<string, any>) => void;
 
 const EventContext = React.createContext({} as any);
 
@@ -69,12 +69,12 @@ export function event(name: string, handler: Handler) {
  * @param {string} key - Get by key an array with state and callback function
  */
 export function state<T = any>(key: string) {
-  const value = stateMapRef?.get(key);
+  const value = statesMapRef?.get(key);
   return [
     value,
     (callback: Callback) => {
       const immValue = produce(value, callback);
-      const newValue = stateMapRef?.set(key, immValue);
+      const newValue = statesMapRef?.set(key, immValue);
 
       if (em.statelog) {
         // log key state
@@ -125,7 +125,7 @@ export function state<T = any>(key: string) {
         }
       }
 
-      setStateRef(newValue);
+      setStatesRef(newValue);
     },
   ];
 }
@@ -136,10 +136,10 @@ export function state<T = any>(key: string) {
  * @param {function} callback - Function, called the recipe, that is passed a draft to which we can apply straightforward mutations
  */
 export function setStateByKey(key: string, callback: Callback) {
-  const value = stateMapRef?.get(key);
+  const value = statesMapRef?.get(key);
   const immValue = produce(value, callback);
-  const newValue = stateMapRef?.set(key, immValue);
-  setStateRef(newValue);
+  const newValue = statesMapRef?.set(key, immValue);
+  setStatesRef(newValue);
 }
 
 /**
@@ -161,24 +161,24 @@ export function withState<T = any>(component: React.FC<T>, keys: string[]) {
 
 export function Provider({
   children,
-  value,
+  states,
   onChange,
   eventlog = false,
   statelog = false,
   persistent = false,
-}: StateProviderProps) {
-  const [state, setState] = React.useState(value);
+}: ProviderProps) {
+  const [state, setState] = React.useState(states);
   const [ready, setReady] = React.useState(false);
 
   const handleSet = React.useCallback(
     (newState: Map<string, any>) => {
-      stateMapRef = new Map(newState);
-      setState(stateMapRef);
+      statesMapRef = new Map(newState);
+      setState(statesMapRef);
 
       if (typeof onChange === "function") {
         cancelAnimationFrame(timeoutState);
         timeoutState = requestAnimationFrame(() => {
-          onChange(stateMapRef);
+          onChange(statesMapRef);
         });
       }
 
@@ -186,12 +186,12 @@ export function Provider({
         cancelAnimationFrame(timeoutStore);
         timeoutStore = requestAnimationFrame(() => {
           try {
-            if (!stateMapRef?.entries) {
+            if (!statesMapRef?.entries) {
               throw Error("State reference is no a Map object");
             }
             localStorage.setItem(
               "emstates",
-              JSON.stringify(Array.from(stateMapRef.entries()))
+              JSON.stringify(Array.from(statesMapRef.entries()))
             );
           } catch (e) {
             console.log("Error saving states on storage", e);
@@ -203,10 +203,10 @@ export function Provider({
   );
 
   React.useEffect(() => {
-    stateMapRef = value;
-    setStateRef = handleSet;
+    statesMapRef = states;
+    setStatesRef = handleSet;
     setReady(true);
-  }, [value, handleSet]);
+  }, [states, handleSet]);
 
   React.useEffect(() => {
     if (persistent) {

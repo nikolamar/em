@@ -1,8 +1,8 @@
 export type Callback = (state: any) => void;
 
-export type StateProviderProps = {
+export type ProviderProps = {
   children: React.ReactNode;
-  value: Map<string, any>;
+  states: Map<string, any>;
   onChange?: Callback;
   eventlog?: boolean;
   statelog?: boolean;
