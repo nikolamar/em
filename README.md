@@ -30,11 +30,12 @@ export const states = new Map([
   ["firstName", "Pamela"],
   ["lastName", "Anderson"],
   [
-    "qualities": {
+    "qualities",
+    {
       hair: "blonde",
       eyes: "blue" 
-    }
-  ]
+    },
+  ],
 ]);
 ```
 
