@@ -1,3 +1,3 @@
-test("colors", () => {
+test("message", () => {
   // TODO: start writing tests
 });
