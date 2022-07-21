@@ -102,7 +102,7 @@ export const LifeGuard = withState(
 );
 ```
 
-**Click on the button Pamela becomes a Mitch**
+**Click on the button and Pamela becomes a Mitch**
 
 <p>&nbsp;</p>
 
