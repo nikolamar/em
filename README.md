@@ -23,14 +23,14 @@ npm install emstore
 
 ## Fly like an eagle
 
-**Create multiple states**
+**Create a map of states**
 
 ```javascript
 export const states = new Map([
   ["firstName", "Pamela"],
   ["lastName", "Anderson"],
   [
-    "qualities",
+    "appearance",
     {
       hair: "blonde",
       eyes: "blue" 
@@ -39,31 +39,11 @@ export const states = new Map([
 ]);
 ```
 
-**Create an event function to track it**
-
-```javascript
-import { event, state } from "emstore";
-
-export const pamToMitch = event("pamToMitch", () => {
-  const [firstName, setFirstName] = state("firstName");
-  const [lastName, setLastName] = state("lastName");
-  const [qualities, setQualities] = state("qualities");
-
-  // change name to Mitch Buchannon
-  setFirstName(() => "Mitch");
-  setLastName(() => "Buchannon");
-
-  // mutation-like immutability
-  setQualities((draft) => {
-    draft.hair = "dark brown";
-  });
-});
-```
-
-**Wrap your application in states provider**
+**Wrap your application in provider**
 
 ```javascript
 import { Provider } from "emstore";
+import { LifeGuard } from "life-guard";
 
 function App() {
   return (
@@ -79,26 +59,50 @@ function App() {
 }
 ```
 
-**Use the states and events in component**
+**Create a event function**
+
+```javascript
+import { event, state } from "emstore";
+
+export const pamToMitch = event("pamToMitch", () => {
+  const [firstName, setFirstName] = state("firstName");
+  const [lastName, setLastName] = state("lastName");
+  const [appearance, setAppearance] = state("appearance");
+
+  // change name to Mitch Buchannon
+  setFirstName(() => "Mitch");
+  setLastName(() => "Buchannon");
+
+  // mutation-like immutability
+  setAppearance((draft) => {
+    draft.hair = "dark brown";
+  });
+});
+```
+
+**Inject states with withState function and use your event**
 
 ```javascript
 import { withState } from "emstore";
+import { pamToMitch } from "./pam-to-mitch";
 
 export const LifeGuard = withState(
-  ({ states: [firstName, lastName] }) => {
+  ({ states: [firstName, lastName, appearance] }) => {
     return (
       <ul>
         <li>{firstName}</li>
         <li>{lastName}</li>
-        <button onClick={pamToMitch} />
+        <li>{appearance.hair}</li>
+        <li>{appearance.eyes}</li>
+        <button onClick={pamToMitch}>Pamela to Mitch</button>
       </ul>
     );
   },
-  ["firstName", "lastName"]
+  ["firstName", "lastName", "appearance"]
 );
 ```
 
-**Pamela Anderson becomes a man a Mitch Buchannon**
+**Click on the button Pamela becomes a Mitch**
 
 <p>&nbsp;</p>
 
