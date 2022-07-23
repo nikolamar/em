@@ -9,6 +9,8 @@
     "test": "jest",
     "test:ci": "jest --coverage",
     "lint": "eslint --cache --fix ./src",
+    "watch:e6": "tsc --watch -p tsconfig.json",
+    "watch:e5": "tsc --watch -p tsconfig.es5.json",
     "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.es5.json"
   },
   "author": "Nikola Marjanovic <nikolamar@gmail.com>",
