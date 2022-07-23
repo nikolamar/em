@@ -48,9 +48,9 @@ import { LifeGuard } from "life-guard";
 function App() {
   return (
     <Provider
+      states={states}
       statelog={true}
       eventlog={true}
-      states={states}
       persistent={true}
     >
       <LifeGuard />
