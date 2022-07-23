@@ -1,7 +1,6 @@
 {
   "name": "em",
   "description": "Event Manager for React",
-  "main": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nikolamar/em.git"
