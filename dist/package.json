@@ -1,6 +1,6 @@
 {
   "name": "emstore",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Event Manager for React",
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
