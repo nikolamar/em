@@ -149,11 +149,19 @@ export function setStateByKey(key: string, callback: Callback) {
  */
 export function withState<T = any>(component: React.FC<T>, keys: string[]) {
   return ({ children, ...rest }: CompWithStateProps) => {
+    /**
+     * This is rendered every single time since it is used with context.
+     * I could just ditch context and rerender the component manually.
+     */
     const context = React.useContext(EventContext);
     const states = keys.map((key) => context.get(key));
-    const props = { ...rest, states } as any;
 
     return React.useMemo(() => {
+      /**
+       * React.useMemo() compares the states.
+       * This is rendered only if the state is changed.
+       */
+      const props = { ...rest, states } as any;
       return React.createElement(component, props, children);
     }, states);
   };
