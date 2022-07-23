@@ -92,7 +92,7 @@ jobs:
           npm publish --access=public
         shell: bash
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
