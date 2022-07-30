@@ -1,7 +1,6 @@
 import React from "react";
-import produce from "immer";
+import produce, { enableMapSet as enableImmerMapSet } from "immer";
 import { BLUE500, PINK500, TEAL500 } from "./colors";
-import { msg } from "./msg";
 import type {
   EM,
   Handler,
@@ -11,10 +10,11 @@ import type {
 } from "./types";
 
 const em: EM = {
-  event: {},
+  events: new Set([]),
   eventlog: false,
   statelog: false,
   persistent: false,
+  enableMapSet: false,
   lineHeight: "2em",
   valColor: TEAL500,
   eveColor: PINK500,
@@ -43,7 +43,7 @@ export function event(name: string, handler: Handler) {
     throw "Event name is not a string";
   }
 
-  if (em.event[name]) {
+  if (em.events.has(name)) {
     throw `This event name "${name}" already exist`;
   }
 
@@ -51,17 +51,17 @@ export function event(name: string, handler: Handler) {
     throw "Event handler is not a function";
   }
 
-  em.event[name] = (...args) => {
+  em.events.add(name);
+
+  return (...args: any[]) => {
     if (em.eventlog) {
       console.log(
         `eve: %c${name}`,
         `line-height: ${em.lineHeight}; color: ${em.eveColor}`
       );
     }
-    typeof handler === "function" && handler(...args);
+    handler(...args);
   };
-
-  return em.event[name];
 }
 
 /**
@@ -108,6 +108,11 @@ export function state<T = any>(key: string) {
         } else if (logValue === undefined) {
           console.log(
             "val: %cundefined",
+            `line-height: ${em.lineHeight}; color: ${em.valColor}`
+          );
+        } else if (typeof logValue === "object" && logValue.get) {
+          console.log(
+            `val: %c${JSON.stringify(Object.fromEntries(logValue), null, 2)}`,
             `line-height: ${em.lineHeight}; color: ${em.valColor}`
           );
         } else if (typeof logValue === "object") {
@@ -174,6 +179,7 @@ export function Provider({
   eventlog = false,
   statelog = false,
   persistent = false,
+  enableMapSet = false,
 }: ProviderProps) {
   const [state, setState] = React.useState(states);
   const [ready, setReady] = React.useState(false);
@@ -213,8 +219,11 @@ export function Provider({
   React.useEffect(() => {
     statesMapRef = states;
     setStatesRef = handleSet;
+    if (enableMapSet) {
+      enableImmerMapSet();
+    }
     setReady(true);
-  }, [states, handleSet]);
+  }, [states, handleSet, enableMapSet]);
 
   React.useEffect(() => {
     if (persistent) {
@@ -238,7 +247,8 @@ export function Provider({
     em.eventlog = eventlog;
     em.statelog = statelog;
     em.persistent = persistent;
-  }, [eventlog, statelog, persistent]);
+    em.enableMapSet = enableMapSet;
+  }, [eventlog, statelog, persistent, enableMapSet]);
 
   if (!ready) {
     return null;
@@ -246,11 +256,3 @@ export function Provider({
 
   return React.createElement(EventContext.Provider, { value: state }, children);
 }
-
-em.state = state;
-em.setStateByKey = setStateByKey;
-
-// send friendly message tip to the console
-console.log(`%c ${msg}`, "color: #2979FF");
-
-(<any>window).em = em;
