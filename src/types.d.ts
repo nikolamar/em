@@ -7,6 +7,7 @@ export type ProviderProps = {
   eventlog?: boolean;
   statelog?: boolean;
   persistent?: boolean;
+  enableMapSet?: boolean;
 };
 
 export type Handler = (...val: any) => void;
@@ -14,12 +15,11 @@ export type Handler = (...val: any) => void;
 export type SetStateByKey = (key: string, callback: Handler) => void;
 
 export type EM = {
-  state?: Record<string, any>;
-  setStateByKey?: SetStateByKey;
-  event: Record<string, Handler>;
+  events: Set;
   eventlog: boolean;
   statelog: boolean;
   persistent: boolean;
+  enableMapSet: boolean;
   lineHeight: string;
   valColor: string;
   eveColor: string;
