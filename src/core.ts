@@ -180,6 +180,8 @@ export function Provider({
   statelog = false,
   persistent = false,
   enableMapSet = false,
+  serializeStates,
+  deserializeStates,
 }: ProviderProps) {
   const [state, setState] = React.useState(states);
   const [ready, setReady] = React.useState(false);
@@ -203,6 +205,13 @@ export function Provider({
             if (!statesMapRef?.entries) {
               throw Error("State reference is no a Map object");
             }
+
+            if (typeof serializeStates === "function") {
+              const result = serializeStates(statesMapRef);
+              localStorage.setItem("emstate", JSON.stringify(result));
+              return;
+            }
+
             localStorage.setItem(
               "emstates",
               JSON.stringify(Array.from(statesMapRef.entries()))
@@ -228,14 +237,24 @@ export function Provider({
   React.useEffect(() => {
     if (persistent) {
       try {
-        const emStatesString = localStorage.getItem("emstates");
-        if (emStatesString) {
-          const emParsedStates = JSON.parse(emStatesString);
-          if (typeof emParsedStates === "object") {
-            handleSet(new Map(emParsedStates));
-          } else {
-            throw "Parsed state is not a object";
-          }
+        const emstateString = localStorage.getItem("emstate");
+
+        if (!emstateString) {
+          return;
+        }
+
+        if (typeof deserializeStates === "function") {
+          const result = deserializeStates(emstateString);
+          handleSet(result);
+          return;
+        }
+
+        const emParsedStates = JSON.parse(emstateString);
+
+        if (typeof emParsedStates === "object") {
+          handleSet(new Map(emParsedStates));
+        } else {
+          throw "Parsed state is not a object";
         }
       } catch (e) {
         console.log("Error loading state from storage", e);

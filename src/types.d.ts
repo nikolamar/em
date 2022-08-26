@@ -8,6 +8,8 @@ export type ProviderProps = {
   statelog?: boolean;
   persistent?: boolean;
   enableMapSet?: boolean;
+  serializeStates?: (states: any) => void;
+  deserializeStates?: (states: string) => Map<string, any>;
 };
 
 export type Handler = (...val: any) => void;
