@@ -57,7 +57,7 @@ const App = withState<AppProps>(({ states: [value]}) => {
     <span>{value}</span>
   );
   ...
-});
+}, ["value"]);
 ```
 
 > **_NOTE:_** Usually what I love to do first is to group components in atoms, molecules, organisms, and pages. And I like to wrap only organisms with states. It scales better.
@@ -198,7 +198,7 @@ But still, it will not work because we are using a persistent prop with hash map
 ...
 ```
 
-> **_NOTE:_** If you don't use persistent with maps and states you don't have to do state parsing yourself.
+> **_NOTE:_** If you don't use persistent with maps and sets you don't have to do state parsing yourself.
 
 Add deserialize and serialize functions.
 
