@@ -1,133 +1,310 @@
-![alt text](https://raw.githubusercontent.com/nikolamar/em/master/.assets/em.png)
+![alt emstore](.assets/em.png)
 
-<p>The Event Manager is a bare-bone simple state manager. <strong>It is very easy to use.</strong> It allows you to quickly prototype the app and easily manage and track your state changes. <strong>You are in control of organising and keeping things simple.</strong> Wrap your actions-events and easily log them, measure performance and use middlewares. <strong>Set state from anywhere</strong> outside, inside whatever.</p>
+**Develop your app scalable and quickly without no fuss**
 
-<ul>
-  <li>Zero configuration</li>
-  <li>No boilerplate</li>
-  <li>Easy state wrapper</li>
-  <li>Extensive TypeScript support</li>
-  <li>State persistence</li>
-  <li>Make it local or global</li>
-</ul>
+<p>The EM store is a minimalistic simple library for managing the state inside React app. It is easy to track which function changed the state inside your app and there are no boilerplate or weird limits. It works surprisingly well for bigger apps and smaller apps.</p>
 
 <p>&nbsp;</p>
 
-All of this comes via a single dependency install.
+## Install
+
+This library is dependent on immer, install it like this.
 
 ```
-npm install emstore
+npm i emstore immer
 ```
 
 <p>&nbsp;</p>
 
-## Fly like an eagle
+## Show me minimalistic approach
 
-**Create a map of states**
+<p>&nbsp;</p>
 
-```javascript
-export const states = new Map([
-  ["firstName", "Pamela"],
-  ["lastName", "Anderson"],
-  [
-    "appearance",
-    {
-      hair: "blonde",
-      eyes: "blue" 
-    },
-  ],
-]);
+**Create states**
+
+First define just one state in the beginning, let's call this new state `value` and let initial value be 0.
+
+```typescript
+export const states = new Map<string, any>(["value", 0]);
 ```
 
-**Wrap your application in provider**
+> **_NOTE:_** Keep in mind that the state can be complicated as hell you want, you can use maps sets plain objects etc. Thanks to immer you'll don't have to worry about immutability change your state in mutable way and immer will take care of it. A good practice is to group your new states in variable states for easy access. Don't worry about performance, access time to this states, it is O(1).
 
-```javascript
+<p>&nbsp;</p>
+
+**Wrap your application in provider to share state across components**
+
+```typescript
 import { Provider } from "emstore";
-import { LifeGuard } from "life-guard";
+...
 
-function App() {
-  return (
-    <Provider
-      states={states}
-      persistent={true}
-      consolelog={true}
-    >
-      <LifeGuard />
-    </Provider>
-  );
-}
+...
+<Provider states={states}><App/></Provider>
+...
+
 ```
 
-**Create a event function**
+> **_NOTE:_** Provider has this props that are explained later in this document (enableMapSet, states, consolelog, onChange, serializeStates, deserializeStates).
 
-```javascript
-import { event, state } from "emstore";
+<p>&nbsp;</p>
 
-export const pamToMitch = event("pamToMitch", () => {
-  const [firstName, setFirstName] = state("firstName");
-  const [lastName, setLastName] = state("lastName");
-  const [appearance, setAppearance] = state("appearance");
+**Wrap your app with states, usually, you wrap some components (organisms)**
 
-  // change name to Mitch Buchannon
-  setFirstName(() => "Mitch");
-  setLastName(() => "Buchannon");
+Select which states you want to share with the component.
 
-  // mutation-like immutability
-  setAppearance((draft) => {
-    draft.hair = "dark brown";
-  });
+```typescript
+import { withState } from "emstore";
+
+type AppProps = {
+  states: [number];
+}
+
+const App = withState<AppProps>(({ states: [value]}) => {
+  ...
+  return (
+    <span>{value}</span>
+  );
+  ...
 });
 ```
 
-**Inject states with withState function and use your event**
+> **_NOTE:_** Usually what I love to do first is to group components in atoms, molecules, organisms, and pages. And I like to wrap only organisms with states. This way it scales better.
 
-```javascript
-import { withState } from "emstore";
-import { pamToMitch } from "./pam-to-mitch";
+<p>&nbsp;</p>
 
-export const LifeGuard = withState(
-  ({ states: [firstName, lastName, appearance] }) => {
-    return (
-      <ul>
-        <li>{firstName}</li>
-        <li>{lastName}</li>
-        <li>{appearance.hair}</li>
-        <li>{appearance.eyes}</li>
-        <button onClick={pamToMitch}>Pamela to Mitch</button>
-      </ul>
-    );
-  },
-  ["firstName", "lastName", "appearance"]
-);
+**Create a event function**
+
+This is not a real event but this is for you just to imagine and break the app into smaller pieces. It will get easier to track and log changes after.
+
+```typescript
+import { state } from "emstore";
+
+export function add() {
+  const [state, setState] = state("value");
+
+  // If you are familiar with immer
+  // we are using it for changing states.
+  // Change state with immer, basics: https://immerjs.github.io/immer/produce/
+  setState((draft: number) => (draft + 1));
+};
 ```
 
-**Click on the button and Pamela becomes a Mitch**
+> **_NOTE:_** What I like to do is to remove all business logic from components in these smaller event functions. This way you are getting more organized and scalable. Once the app starts growing you'll be happier.
 
 <p>&nbsp;</p>
 
-## Todo
+**Fire your event function from the button**
 
-- [ ] Dev Tools
-- [ ] Middlewares
-- [ ] Record bug
-- [ ] Measuring performance
+Link your function to your button that will increase `value` number.
 
-## Our Sponsors ❤️
-
-We have only but great appreciation to those who support this project. If you
-have the ability to help contribute towards the continued maintenance and
-evolution of this library then please consider
-[[becoming a sponsor](https://github.com/nikolamar/em)].
+```typescript
+...
+<button onClick={addOne}> + 1 </button>
+...
+```
 
 <p>&nbsp;</p>
 
-## Documentation
+**How to track which function changed your state? Before answering that question let's add an event function for decreasing same number**
 
-See the [official website](https://github.com/nikolamar/em) for tutorials, docs, recipes,
-and more.
+Function to decrease `value` number.
+
+```typescript
+export function decrease() {
+  const [state, setState] = state("value");
+
+  // If you are familiar with immer
+  // we are using it for changing states.
+  // Change state with immer, basics: https://immerjs.github.io/immer/produce/
+  setState((draft: number) => (draft - 1));
+};
+```
 
 <p>&nbsp;</p>
 
-## OS Awards
+**Fire your event function from the button to decrease value**
 
-None
+Link your function to your button that will decrease `value` number.
+
+```typescript
+...
+<button onClick={decrease}> - 1 </button>
+...
+```
+
+<p>&nbsp;</p>
+
+**Lets organize and group this functions in file called "value-change.ts" and mark this state changes with event name `valueChange`**
+
+```typescript
+import { state as emState } from "emstore";
+
+const state = (key: string) => emState(key, "valueChange");
+
+export function add() {
+  const [state, setState] = state("value");
+
+  // If you are familiar with immer
+  // we are using it for changing states.
+  // Change state with immer, basics: https://immerjs.github.io/immer/produce/
+  setState((draft: number) => (draft + 1));
+};
+
+export function decrease() {
+  const [state, setState] = state("value");
+
+  // If you are familiar with immer
+  // we are using it for changing states.
+  // Change state with immer, basics: https://immerjs.github.io/immer/produce/
+  setState((draft: number) => (draft - 1));
+};
+```
+
+> **_NOTE:_** Now all value state changes are grouped under key "valueChange"
+
+<p>&nbsp;</p>
+
+**Now let's log who changed our "value" state and add "consolelog" prop to emstore provider**
+
+Add prop `consolelog` to `Provider`.
+
+```typescript
+...
+<Provider
+  consolelog
+  states={states}
+>
+  <App/>
+</Provider>
+...
+
+```
+
+<p>&nbsp;</p>
+
+**When you fire an event you can see the name of the event, the state name that you used in a function, and the previous value with a new value logged in the console**
+
+<p>&nbsp;</p>
+
+**If you want your app to be persistent and recover its state on browser refresh we got you covered here too**
+
+Add prop `persistent` to Provider.
+
+```typescript
+...
+<Provider
+  persistent
+  consolelog
+  states={states}
+>
+    <App/>
+</Provider>
+...
+
+```
+
+<p>&nbsp;</p>
+
+**Now, if you use a persistent prop and if you have maps and sets this will not work, to fix this first we have to enable maps and sets in the provider and tell immer that we will use it**
+
+Add prop `enableMapSet`.
+
+```typescript
+...
+<Provider
+  enableMapSet
+  persistent
+  consolelog
+  states={states}
+>
+    <App/>
+</Provider>
+...
+```
+
+<p>&nbsp;</p>
+
+**But still, it will not work because we are using a persistent prop with hash maps and sets. Javascript doesn't know how to stringify (while this could be automized it is better for a user to handle serialize and deserialize themselves)**
+
+Add provider callback props `serializeStates` and `deserializeStates`.
+
+```typescript
+...
+<Provider
+  enableMapSet
+  persistent
+  consolelog
+  states={states}
+  serializeStates={serializeStates}
+  deserializeStates={deserializeStates}
+>
+    <App/>
+</Provider>
+...
+```
+
+Add deserialize and serialize functions.
+
+```typescript
+const setObjects = [
+  "state1",
+  "state2",
+  "state3",
+  "state4",
+];
+
+const mapObjects = [
+  "state5",
+  "state6",
+  "state7",
+  "state8",
+];
+
+export function deserializeStates(emstateString: string) {
+  const statesArr = JSON.parse(emstateString);
+  const newArr = statesArr.map(([key, val]: any) => {
+    if (setObjects.some((setKey) => setKey === key)) {
+      return [key, new Set(val)];
+    }
+
+    if (mapObjects.some((mapKey) => mapKey === key)) {
+      const nestedMaps = val.map((state2: any) => {
+        const [key, val] = state2;
+        return [key, val];
+      });
+      return [key, new Map(nestedMaps)];
+    }
+
+    return [key, val];
+  });
+  return newArr;
+}
+
+export function serializeStates(states: Map<string, any>) {
+  const statesArr = Array.from(states.entries());
+  const newArr = statesArr.map((state: any) => {
+    const [key, val] = state;
+
+    if (setObjects.some((setKey) => setKey === key)) {
+      return [key, Array.from(val)];
+    }
+
+    if (mapObjects.some((mapKey) => mapKey === key)) {
+      const nestedMaps = Array.from(val)?.map((state2: any) => {
+        const [key2, val2] = state2;
+        return [key2, val2];
+      });
+      return [key, Array.from(nestedMaps)];
+    }
+
+    return [key, val];
+  });
+
+  return newArr;
+}
+```
+I Congratulate you.
+
+If you survived all the way to here probably you didn't read or you are really something special! 😊
+
+Either way, have a nice day!
