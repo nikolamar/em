@@ -11,8 +11,7 @@ import type {
 
 const em: EM = {
   events: new Set([]),
-  eventlog: false,
-  statelog: false,
+  consolelog: false,
   persistent: false,
   enableMapSet: false,
   lineHeight: "2em",
@@ -53,22 +52,14 @@ export function event(name: string, handler: Handler) {
 
   em.events.add(name);
 
-  return (...args: any[]) => {
-    if (em.eventlog) {
-      console.log(
-        `eve: %c${name}`,
-        `line-height: ${em.lineHeight}; color: ${em.eveColor}`
-      );
-    }
-    handler(...args);
-  };
+  return (...args: any[]) => handler(...args);
 }
 
 /**
  * Get by key an array with state and callback function
  * @param {string} key - Get by key an array with state and callback function
  */
-export function state<T = any>(key: string) {
+export function state<T = any>(key: string, name?: string) {
   const value = statesMapRef?.get(key);
   return [
     value,
@@ -76,58 +67,26 @@ export function state<T = any>(key: string) {
       const immValue = produce(value, callback);
       const newValue = statesMapRef?.set(key, immValue);
 
-      if (em.statelog) {
-        // log key state
+      if (em.consolelog) {
+        const date = new Date();
+        const seconds = date.getSeconds();
+        const minutes = date.getMinutes();
+        const hour = date.getHours();
+        const time = `${hour}:${minutes}:${seconds}`;
         console.log(
-          `key: %c${key}`,
-          `line-height: ${em.lineHeight}; color: ${em.keyColor}`
+          `%c${time} %cevent: %c${name} %cstate: %c${key} %cvalue: %c${handleValue(
+            value
+          )} %cnewvalue: %c${handleValue(newValue?.get(key))}`,
+          "color: black",
+          "color: grey",
+          "color: black",
+          "color: grey",
+          "color: black",
+          "color: grey",
+          "color: black",
+          "color: grey",
+          "color: black"
         );
-
-        // log new value state
-        const logValue = newValue?.get(key);
-        if (typeof logValue === "string" && logValue !== "") {
-          console.log(
-            `val: %c${logValue}`,
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (logValue === "") {
-          console.log(
-            "val: %cempty string",
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (typeof logValue === "boolean") {
-          console.log(
-            `val: %c${logValue}`,
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (logValue === null) {
-          console.log(
-            "val: %cnull object",
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (logValue === undefined) {
-          console.log(
-            "val: %cundefined",
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (typeof logValue === "object" && logValue.get) {
-          console.log(
-            `val: %c${JSON.stringify(Object.fromEntries(logValue), null, 2)}`,
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (typeof logValue === "object") {
-          console.log(
-            `val: %c${JSON.stringify(logValue, null, 2)}`,
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else if (typeof logValue === "number") {
-          console.log(
-            `val: %c${logValue}`,
-            `line-height: ${em.lineHeight}; color: ${em.valColor}`
-          );
-        } else {
-          console.log(logValue);
-        }
       }
 
       setStatesRef(newValue);
@@ -167,17 +126,16 @@ export function withState<T = any>(component: React.FC<T>, keys: string[]) {
        * This is rendered only if the state is changed.
        */
       const props = { ...rest, states } as any;
-      return React.createElement(component, props, children);
+      return React.createElement(component as any, props, children);
     }, states);
   };
 }
 
 export function Provider({
-  children,
   states,
+  children,
   onChange,
-  eventlog = false,
-  statelog = false,
+  consolelog = false,
   persistent = false,
   enableMapSet = false,
   serializeStates,
@@ -222,7 +180,7 @@ export function Provider({
         });
       }
     },
-    [onChange, persistent]
+    [onChange, persistent, serializeStates]
   );
 
   React.useEffect(() => {
@@ -260,18 +218,30 @@ export function Provider({
         console.log("Error loading state from storage", e);
       }
     }
-  }, [persistent, handleSet]);
+  }, [persistent, handleSet, deserializeStates]);
 
   React.useEffect(() => {
-    em.eventlog = eventlog;
-    em.statelog = statelog;
+    em.consolelog = consolelog;
     em.persistent = persistent;
     em.enableMapSet = enableMapSet;
-  }, [eventlog, statelog, persistent, enableMapSet]);
+  }, [consolelog, persistent, enableMapSet]);
 
   if (!ready) {
     return null;
   }
 
   return React.createElement(EventContext.Provider, { value: state }, children);
+}
+
+function handleValue(value: any) {
+  if (typeof value === "string" && value !== "") return value;
+  if (value === "") return `""`;
+  if (typeof value === "boolean") return value;
+  if (value === null) return null;
+  if (value === undefined) return undefined;
+  if (typeof value === "object" && value.get)
+    return JSON.stringify(Object.fromEntries(value), null, 2);
+  if (typeof value === "object") return JSON.stringify(value, null, 2);
+  if (typeof value === "number") return value;
+  return value;
 }

@@ -49,9 +49,8 @@ function App() {
   return (
     <Provider
       states={states}
-      statelog={true}
-      eventlog={true}
       persistent={true}
+      consolelog={true}
     >
       <LifeGuard />
     </Provider>
