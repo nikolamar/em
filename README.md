@@ -20,8 +20,6 @@ npm i emstore immer
 
 <p>&nbsp;</p>
 
-**Create states**
-
 First define just one state in the beginning, let's call this new state `value` and let initial value be 0.
 
 ```typescript
@@ -30,9 +28,7 @@ export const states = new Map<string, any>(["value", 0]);
 
 > **_NOTE:_** Keep in mind that the state can be a nested object, you can use maps sets plain objects, etc. Thanks to immer you'll don't have to worry about immutability. Change your state in a mutable way and immer will take care of it. A good practice is to group your new states in variable states for easy access. Don't worry about performance, access time to this states is O(1).
 
-<p>&nbsp;</p>
-
-**Wrap your application in provider to share state across components**
+Wrap your application in provider to share state across components.
 
 ```jsx
 import { Provider } from "emstore";
@@ -46,11 +42,7 @@ import { Provider } from "emstore";
 
 > **_NOTE:_** Provider has this props that are explained later in this document (enableMapSet, states, consolelog, onChange, serializeStates, deserializeStates).
 
-<p>&nbsp;</p>
-
-**Wrap your app with states, usually, you wrap some components (organisms)**
-
-Select which states you want to share with the component.
+Wrap your app with states, usually, you wrap some components (organisms).
 
 ```typescript
 import { withState } from "emstore";
@@ -70,11 +62,7 @@ const App = withState<AppProps>(({ states: [value]}) => {
 
 > **_NOTE:_** Usually what I love to do first is to group components in atoms, molecules, organisms, and pages. And I like to wrap only organisms with states. It scales better.
 
-<p>&nbsp;</p>
-
-**Create a event function**
-
-This is not a real event but this is for you just to imagine and break the app into smaller pieces. It will get easier to track and log changes after.
+Create a event function. It is not a real event but this is for you just to imagine and break the app into smaller pieces. It will get easier to track and log changes after.
 
 ```typescript
 import { state } from "emstore";
@@ -91,11 +79,7 @@ export function add() {
 
 > **_NOTE:_** What I like to do is to remove all business logic from components in these smaller event functions. This way you are getting more organized and scalable. Once the app starts growing you'll be happier.
 
-<p>&nbsp;</p>
-
-**Fire your event function from the button**
-
-Link your function to your button that will increase `value` number.
+Fire your event function from the button.
 
 ```jsx
 ...
@@ -103,11 +87,7 @@ Link your function to your button that will increase `value` number.
 ...
 ```
 
-<p>&nbsp;</p>
-
-**How to track which function changed your state? Before answering that question let's add an event function for decreasing same number**
-
-Function to decrease `value` number.
+How to track which function changed your state? Before answering that question let's add an event function for decreasing same number.
 
 ```typescript
 export function decrease() {
@@ -120,11 +100,7 @@ export function decrease() {
 };
 ```
 
-<p>&nbsp;</p>
-
-**Fire your event function from the button to decrease value**
-
-Link your function to your button that will decrease `value` number.
+Fire your event function from the button to decrease value.
 
 ```jsx
 ...
@@ -132,9 +108,7 @@ Link your function to your button that will decrease `value` number.
 ...
 ```
 
-<p>&nbsp;</p>
-
-**Lets organize and group this functions in file called "value-change.ts" and mark this state changes with event name `valueChange`**
+Lets organize and group this functions in file called "value-change.ts" and mark this state changes with event name `valueChange`.
 
 ```typescript
 import { state as emState } from "emstore";
@@ -162,11 +136,7 @@ export function decrease() {
 
 > **_NOTE:_** Now all value state changes are grouped under key "valueChange"
 
-<p>&nbsp;</p>
-
-**Now let's log who changed our "value" state and add "consolelog" prop to emstore provider**
-
-Add prop `consolelog` to `Provider`.
+Now let's log who changed our "value" state and add "consolelog" prop to emstore provider. Add prop `consolelog` to `Provider`.
 
 ```jsx
 ...
@@ -180,11 +150,8 @@ Add prop `consolelog` to `Provider`.
 
 ```
 
-<p>&nbsp;</p>
+When you fire an event you can see the name of the event, the state name that you used in a function, and the previous value with a new value logged in the console. If you want your app to be persistent and recover its state on browser refresh we got you covered here too. Add prop `persistent` to Provider.
 
-**When you fire an event you can see the name of the event, the state name that you used in a function, and the previous value with a new value logged in the console. If you want your app to be persistent and recover its state on browser refresh we got you covered here too**
-
-Add prop `persistent` to Provider.
 
 ```jsx
 ...
@@ -199,11 +166,7 @@ Add prop `persistent` to Provider.
 
 ```
 
-<p>&nbsp;</p>
-
-**Now, if you use a persistent prop and if you have maps and sets this will not work, to fix this first we have to enable maps and sets in the provider and tell immer that we will use it**
-
-Add prop `enableMapSet`.
+Now, if you use a persistent prop and if you have maps and sets this will not work, to fix this first we have to enable maps and sets in the provider and tell immer that we will use it. Add prop `enableMapSet`.
 
 ```jsx
 ...
@@ -218,11 +181,7 @@ Add prop `enableMapSet`.
 ...
 ```
 
-<p>&nbsp;</p>
-
-**But still, it will not work because we are using a persistent prop with hash maps and sets. Javascript doesn't know how to stringify (while this could be automized it is better for a user to handle serialize and deserialize themselves)**
-
-Add provider callback props `serializeStates` and `deserializeStates`.
+But still, it will not work because we are using a persistent prop with hash maps and sets. Javascript doesn't know how to stringify (while this could be automized it is better for a user to handle serialize and deserialize themselves). Add provider callback props `serializeStates` and `deserializeStates`.
 
 ```jsx
 ...
@@ -301,7 +260,6 @@ export function serializeStates(states: Map<string, any>) {
   return newArr;
 }
 ```
-
 
 Congratulations, you survived all the way until the end,
 you are really something special! 😊
