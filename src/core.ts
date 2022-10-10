@@ -234,7 +234,7 @@ export function Provider({
 }
 
 function handleValue(value: any) {
-  if (typeof value === "string" && value !== "") return value;
+  if (typeof value === "string" && value !== "") return `"${value}"`;
   if (value === "") return `""`;
   if (typeof value === "boolean") return value;
   if (value === null) return null;
