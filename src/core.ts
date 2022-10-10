@@ -63,13 +63,13 @@ export function state<T = any>(key: string, name?: string) {
       const newValue = statesMapRef?.set(key, immValue);
 
       if (em.consolelog) {
-        const date = new Date();
-        const seconds = date.getSeconds();
-        const minutes = date.getMinutes();
-        const hour = date.getHours();
-        const time = `${hour}:${minutes}:${seconds}`;
         console.log(
-          `%c${time} %cevent: %c${name} %cstate: %c${key} %cvalue: %c${handleValue(
+          `%c${new Date()
+            .toTimeString()
+            .substr(
+              0,
+              8
+            )} %cevent: %c${name} %cstate: %c${key} %cvalue: %c${handleValue(
             value
           )} %cnewvalue: %c${handleValue(newValue?.get(key))}`,
           "color: black",
