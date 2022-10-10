@@ -20,10 +20,6 @@ export type EM = {
   consolelog?: boolean;
   persistent?: boolean;
   enableMapSet: boolean;
-  lineHeight: string;
-  valColor: string;
-  eveColor: string;
-  keyColor: string;
 };
 
 type CompWithStateProps = {

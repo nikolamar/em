@@ -1,6 +1,5 @@
 import React from "react";
 import produce, { enableMapSet as enableImmerMapSet } from "immer";
-import { BLUE500, PINK500, TEAL500 } from "./colors";
 import type {
   EM,
   Handler,
@@ -14,10 +13,6 @@ const em: EM = {
   consolelog: false,
   persistent: false,
   enableMapSet: false,
-  lineHeight: "2em",
-  valColor: TEAL500,
-  eveColor: PINK500,
-  keyColor: BLUE500,
 };
 
 let timeoutStore = 0;
