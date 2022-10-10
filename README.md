@@ -28,13 +28,13 @@ First define just one state in the beginning, let's call this new state `value` 
 export const states = new Map<string, any>(["value", 0]);
 ```
 
-> **_NOTE:_** Keep in mind that the state can be complicated as hell you want, you can use maps sets plain objects etc. Thanks to immer you'll don't have to worry about immutability change your state in mutable way and immer will take care of it. A good practice is to group your new states in variable states for easy access. Don't worry about performance, access time to this states, it is O(1).
+> **_NOTE:_** Keep in mind that the state can be a nested object, you can use maps sets plain objects, etc. Thanks to immer you'll don't have to worry about immutability. Change your state in a mutable way and immer will take care of it. A good practice is to group your new states in variable states for easy access. Don't worry about performance, access time to this states is O(1).
 
 <p>&nbsp;</p>
 
 **Wrap your application in provider to share state across components**
 
-```typescript
+```jsx
 import { Provider } from "emstore";
 ...
 
@@ -68,7 +68,7 @@ const App = withState<AppProps>(({ states: [value]}) => {
 });
 ```
 
-> **_NOTE:_** Usually what I love to do first is to group components in atoms, molecules, organisms, and pages. And I like to wrap only organisms with states. This way it scales better.
+> **_NOTE:_** Usually what I love to do first is to group components in atoms, molecules, organisms, and pages. And I like to wrap only organisms with states. It scales better.
 
 <p>&nbsp;</p>
 
@@ -97,7 +97,7 @@ export function add() {
 
 Link your function to your button that will increase `value` number.
 
-```typescript
+```jsx
 ...
 <button onClick={addOne}> + 1 </button>
 ...
@@ -126,7 +126,7 @@ export function decrease() {
 
 Link your function to your button that will decrease `value` number.
 
-```typescript
+```jsx
 ...
 <button onClick={decrease}> - 1 </button>
 ...
@@ -168,7 +168,7 @@ export function decrease() {
 
 Add prop `consolelog` to `Provider`.
 
-```typescript
+```jsx
 ...
 <Provider
   consolelog
@@ -182,15 +182,11 @@ Add prop `consolelog` to `Provider`.
 
 <p>&nbsp;</p>
 
-**When you fire an event you can see the name of the event, the state name that you used in a function, and the previous value with a new value logged in the console**
-
-<p>&nbsp;</p>
-
-**If you want your app to be persistent and recover its state on browser refresh we got you covered here too**
+**When you fire an event you can see the name of the event, the state name that you used in a function, and the previous value with a new value logged in the console. If you want your app to be persistent and recover its state on browser refresh we got you covered here too**
 
 Add prop `persistent` to Provider.
 
-```typescript
+```jsx
 ...
 <Provider
   persistent
@@ -209,7 +205,7 @@ Add prop `persistent` to Provider.
 
 Add prop `enableMapSet`.
 
-```typescript
+```jsx
 ...
 <Provider
   enableMapSet
@@ -228,7 +224,7 @@ Add prop `enableMapSet`.
 
 Add provider callback props `serializeStates` and `deserializeStates`.
 
-```typescript
+```jsx
 ...
 <Provider
   enableMapSet
@@ -242,6 +238,8 @@ Add provider callback props `serializeStates` and `deserializeStates`.
 </Provider>
 ...
 ```
+
+> **_NOTE:_** If you don't use persistent with maps and states you don't have to do state parsing yourself.
 
 Add deserialize and serialize functions.
 
@@ -303,8 +301,9 @@ export function serializeStates(states: Map<string, any>) {
   return newArr;
 }
 ```
-I Congratulate you.
 
-If you survived all the way to here probably you didn't read or you are really something special! 😊
 
-Either way, have a nice day!
+Congratulations, you survived all the way until the end,
+you are really something special! 😊
+
+Have a nice day and keep smiling!
