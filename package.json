@@ -16,7 +16,8 @@
   "author": "Nikola Marjanovic <nikolamar@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "immer": "^9.0.15"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
@@ -46,8 +47,5 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "typescript": "^4.6.3"
-  },
-  "dependencies": {
-    "immer": "^9.0.15"
   }
 }
