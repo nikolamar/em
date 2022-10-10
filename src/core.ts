@@ -53,6 +53,7 @@ export function event(name: string, handler: Handler) {
 /**
  * Get by key an array with state and callback function
  * @param {string} key - Get by key an array with state and callback function
+ * @param {string} name - Event name
  */
 export function state<T = any>(key: string, name?: string) {
   const value = statesMapRef?.get(key);
