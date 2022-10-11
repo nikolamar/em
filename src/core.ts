@@ -1,15 +1,8 @@
 import React from "react";
 import produce, { enableMapSet as enableImmerMapSet } from "immer";
-import type {
-  EM,
-  Handler,
-  Callback,
-  ProviderProps,
-  CompWithStateProps,
-} from "./types";
+import type { EM, Callback, ProviderProps, CompWithStateProps } from "./types";
 
 const em: EM = {
-  events: new Set([]),
   consolelog: false,
   persistent: false,
   enableMapSet: false,
@@ -22,33 +15,6 @@ let statesMapRef: Map<string, any>;
 let setStatesRef: (newState: Map<string, any>) => void;
 
 const EventContext = React.createContext({} as any);
-
-/**
- * Create event function
- * @param {string} name - Event name
- * @param {function} handler - Event handler function
- */
-export function event(name: string, handler: Handler) {
-  if (name === "") {
-    throw "Event name can't be empty string";
-  }
-
-  if (typeof name !== "string") {
-    throw "Event name is not a string";
-  }
-
-  if (em.events.has(name)) {
-    throw `This event name "${name}" already exist`;
-  }
-
-  if (typeof handler !== "function") {
-    throw "Event handler is not a function";
-  }
-
-  em.events.add(name);
-
-  return (...args: any[]) => handler(...args);
-}
 
 /**
  * Get by key an array with state and callback function

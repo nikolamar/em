@@ -11,12 +11,9 @@ export type ProviderProps = {
   deserializeStates?: (states: string) => Map<string, any>;
 };
 
-export type Handler = (...val: any) => void;
-
 export type SetStateByKey = (key: string, callback: Handler) => void;
 
 export type EM = {
-  events: Set;
   consolelog?: boolean;
   persistent?: boolean;
   enableMapSet: boolean;
