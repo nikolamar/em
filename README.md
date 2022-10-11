@@ -81,7 +81,7 @@ Fire your event function from the button.
 
 ```jsx
 ...
-<button onClick={addOne}> + 1 </button>
+<button onClick={add}> + 1 </button>
 ...
 ```
 
