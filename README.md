@@ -16,9 +16,7 @@ npm i emstore immer
 
 <p>&nbsp;</p>
 
-## Show me minimalistic approach
-
-<p>&nbsp;</p>
+## Show me
 
 First define just one state in the beginning, let's call this new state `value` and let initial value be 0.
 
