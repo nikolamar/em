@@ -197,13 +197,13 @@ export function Provider({
 
 function handleValue(value: any) {
   if (typeof value === "string" && value !== "") return `"${value}"`;
-  if (value === "") return `""`;
-  if (typeof value === "boolean") return value;
-  if (value === null) return null;
-  if (value === undefined) return undefined;
-  if (typeof value === "object" && value.get)
+  else if (value === "") return `""`;
+  else if (typeof value === "boolean") return value;
+  else if (value === null) return null;
+  else if (value === undefined) return undefined;
+  else if (typeof value === "object" && value.get)
     return JSON.stringify(Object.fromEntries(value), null, 2);
-  if (typeof value === "object") return JSON.stringify(value, null, 2);
-  if (typeof value === "number") return value;
-  return value;
+  else if (typeof value === "object") return JSON.stringify(value, null, 2);
+  else if (typeof value === "number") return value;
+  else return value;
 }
