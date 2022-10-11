@@ -62,7 +62,7 @@ const App = withState<AppProps>(({ states: [value]}) => {
 
 > **_NOTE:_** Usually what I love to do first is to group components in atoms, molecules, organisms, and pages. And I like to wrap only organisms with states. It scales better.
 
-Create a event function. It is not a real event but this is for you just to imagine and break the app into smaller pieces. It will get easier to track and log changes after.
+Create an event function. It is not a real event but this is for you just to imagine and break the app into smaller pieces. It will get easier to track and log changes after.
 
 ```typescript
 import { state } from "emstore";
@@ -87,7 +87,7 @@ Fire your event function from the button.
 ...
 ```
 
-How to track which function changed your state? Before answering that question let's add an event function for decreasing same number.
+How to track which function changed your state? Before answering that question let's add an event function for decreasing the same number.
 
 ```typescript
 export function decrease() {
@@ -108,7 +108,7 @@ Fire your event function from the button to decrease value.
 ...
 ```
 
-Lets organize and group this functions in file called "value-change.ts" and mark this state changes with event name `valueChange`.
+Let's organize and group these functions in a file called `value-change.ts` and mark these state changes with the event name `valueChange`.
 
 ```typescript
 import { state as emState } from "emstore";
@@ -134,9 +134,9 @@ export function decrease() {
 };
 ```
 
-> **_NOTE:_** Now all value state changes are grouped under key "valueChange"
+> **_NOTE:_** Now all value state changes are grouped under key `valueChange`
 
-Now let's log who changed our "value" state and add "consolelog" prop to emstore provider. Add prop `consolelog` to `Provider`.
+Now let's log who changed our `value` state and add `consolelog` prop to emstore provider.
 
 ```jsx
 ...
@@ -150,7 +150,7 @@ Now let's log who changed our "value" state and add "consolelog" prop to emstore
 
 ```
 
-When you fire an event you can see the name of the event, the state name that you used in a function, and the previous value with a new value logged in the console. If you want your app to be persistent and recover its state on browser refresh we got you covered here too. Add prop `persistent` to Provider.
+When you fire an event you can see the event's name, the state name that you used in a function, and the previous value with a new value logged in the console. If you want your app to be persistent and recover its state on browser refresh we got you covered here too. Add prop `persistent` to Provider.
 
 
 ```jsx
@@ -181,7 +181,7 @@ Now, if you use a persistent prop and if you have maps and sets this will not wo
 ...
 ```
 
-But still, it will not work because we are using a persistent prop with hash maps and sets. Javascript doesn't know how to stringify (while this could be automized it is better for a user to handle serialize and deserialize themselves). Add provider callback props `serializeStates` and `deserializeStates`.
+But still, it will not work because we are using a persistent prop with hash maps and sets. Javascript doesn't know how to stringify (user should handle serializing and deserializing themselves). Add provider callback props `serializeStates` and `deserializeStates`.
 
 ```jsx
 ...
@@ -261,7 +261,6 @@ export function serializeStates(states: Map<string, any>) {
 }
 ```
 
-Congratulations, you survived all the way until the end,
-you are really something special! 😊
+Congratulations, you survived until the end, you are really something special! 😊
 
 Have a nice day and keep smiling!
