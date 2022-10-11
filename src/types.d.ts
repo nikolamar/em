@@ -4,9 +4,10 @@ export type ProviderProps = {
   children: React.ReactNode;
   states: Map<string, any>;
   onChange?: Callback;
-  consolelog?: boolean;
+  consoleLog?: boolean;
   persistent?: boolean;
   enableMapSet?: boolean;
+  performanceLog?: boolean;
   serializeStates?: (states: any) => void;
   deserializeStates?: (states: string) => Map<string, any>;
 };
@@ -14,9 +15,10 @@ export type ProviderProps = {
 export type SetStateByKey = (key: string, callback: Handler) => void;
 
 export type EM = {
-  consolelog?: boolean;
+  consoleLog?: boolean;
   persistent?: boolean;
   enableMapSet: boolean;
+  performanceLog?: boolean;
 };
 
 type CompWithStateProps = {

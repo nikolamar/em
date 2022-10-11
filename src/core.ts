@@ -3,9 +3,10 @@ import produce, { enableMapSet as enableImmerMapSet } from "immer";
 import type { EM, Callback, ProviderProps, CompWithStateProps } from "./types";
 
 const em: EM = {
-  consolelog: false,
+  consoleLog: false,
   persistent: false,
   enableMapSet: false,
+  performanceLog: false,
 };
 
 let timeoutStore = 0;
@@ -29,7 +30,7 @@ export function state<T = any>(key: string, name?: string) {
       const immValue = produce(value, callback);
       const newValue = statesMapRef?.set(key, immValue);
 
-      if (em.consolelog) {
+      if (em.consoleLog) {
         console.log(
           `%c${new Date()
             .toTimeString()
@@ -68,6 +69,12 @@ export function setStateByKey(key: string, callback: Callback) {
   setStatesRef(newValue);
 }
 
+let perfEnd = 0;
+let perfStart = 0;
+let perfTime = 0;
+let perfAccTime = 0;
+let perfTimeout = 0;
+
 /**
  * ReactJS HOC — injects requested states from the second argument
  * @param {Object} component - React Component
@@ -79,16 +86,57 @@ export function withState<T = any>(component: React.FC<T>, keys: string[]) {
      * This is rendered every single time since it is used with context.
      * I could just ditch context and rerender the component manually.
      */
+    if (em.performanceLog) {
+      perfStart = performance.now();
+    }
+
     const context = React.useContext(EventContext);
     const states = keys.map((key) => context.get(key));
+
+    if (em.performanceLog) {
+      perfEnd = performance.now();
+      perfTime = perfEnd - perfStart;
+      perfAccTime += perfTime;
+
+      // log each performance measure
+      console.log(
+        `%c${new Date()
+          .toTimeString()
+          .substr(0, 8)} %ctime: %c${perfTime}ms %cstates: %c${keys}`,
+        "color: black",
+        "color: grey",
+        "color: black",
+        "color: grey",
+        "color: black"
+      );
+
+      cancelAnimationFrame(perfTimeout);
+      perfTimeout = requestAnimationFrame(() => {
+        // log accumulate performance measure
+        console.log(
+          `%c${new Date()
+            .toTimeString()
+            .substr(0, 8)} %ccumulative time: %c${perfAccTime}ms`,
+          "color: black",
+          "color: grey",
+          "color: black"
+        );
+
+        // clear accumulate performance measure
+        perfAccTime = 0;
+      });
+    }
 
     return React.useMemo(() => {
       /**
        * React.useMemo() compares the states.
        * This is rendered only if the state is changed.
        */
-      const props = { ...rest, states } as any;
-      return React.createElement(component as any, props, children);
+      return React.createElement(
+        component as any,
+        { ...rest, states },
+        children
+      );
     }, states);
   };
 }
@@ -97,9 +145,10 @@ export function Provider({
   states,
   children,
   onChange,
-  consolelog = false,
+  consoleLog = false,
   persistent = false,
   enableMapSet = false,
+  performanceLog = false,
   serializeStates,
   deserializeStates,
 }: ProviderProps) {
@@ -183,10 +232,11 @@ export function Provider({
   }, [persistent, handleSet, deserializeStates]);
 
   React.useEffect(() => {
-    em.consolelog = consolelog;
+    em.consoleLog = consoleLog;
     em.persistent = persistent;
     em.enableMapSet = enableMapSet;
-  }, [consolelog, persistent, enableMapSet]);
+    em.performanceLog = performanceLog;
+  }, [performanceLog, consoleLog, persistent, enableMapSet]);
 
   if (!ready) {
     return null;
