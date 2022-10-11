@@ -38,7 +38,7 @@ import { Provider } from "emstore";
 
 ```
 
-> **_NOTE:_** Provider has this props that are explained later in this document (enableMapSet, states, consolelog, onChange, serializeStates, deserializeStates).
+> **_NOTE:_** Provider has this props that are explained later in this document (enableMapSet, states, consoleLog, onChange, serializeStates, deserializeStates, performanceLog).
 
 Wrap your app with states, usually, you wrap some components (organisms).
 
@@ -134,12 +134,12 @@ export function decrease() {
 
 > **_NOTE:_** Now all value state changes are grouped under key `valueChange`
 
-Now let's log who changed our `value` state and add `consolelog` prop to emstore provider.
+Now let's log who changed our `value` state and add `consoleLog` prop to emstore provider.
 
 ```jsx
 ...
 <Provider
-  consolelog
+  consoleLog
   states={states}
 >
   <App/>
@@ -155,7 +155,7 @@ When you fire an event you can see the event's name, the state name that you use
 ...
 <Provider
   persistent
-  consolelog
+  consoleLog
   states={states}
 >
     <App/>
@@ -171,7 +171,7 @@ Now, if you use a persistent prop and if you have maps and sets this will not wo
 <Provider
   enableMapSet
   persistent
-  consolelog
+  consoleLog
   states={states}
 >
     <App/>
@@ -186,7 +186,7 @@ But still, it will not work because we are using a persistent prop with hash map
 <Provider
   enableMapSet
   persistent
-  consolelog
+  consoleLog
   states={states}
   serializeStates={serializeStates}
   deserializeStates={deserializeStates}
@@ -257,6 +257,24 @@ export function serializeStates(states: Map<string, any>) {
 
   return newArr;
 }
+```
+
+When it comes to performance logs you can turn them on with a prop `performanceLog` inside a `Provider`. You'll be able to see how much time it takes to side effects from this library to React.js memoize function.
+
+```jsx
+...
+<Provider
+  enableMapSet
+  persistent
+  consoleLog
+  performanceLog
+  states={states}
+  serializeStates={serializeStates}
+  deserializeStates={deserializeStates}
+>
+    <App/>
+</Provider>
+...
 ```
 
 Congratulations, you survived until the end, you are really something special! 😊
