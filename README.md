@@ -66,12 +66,12 @@ Create an event function. It is not a real event but this is for you just to ima
 import { state } from "emstore";
 
 export function add() {
-  const [state, setState] = state("value");
+  const [value, setValue] = state("value");
 
   // If you are familiar with immer
   // we are using it for changing states.
   // Change state with immer, basics: https://immerjs.github.io/immer/produce/
-  setState((draft: number) => (draft + 1));
+  setValue((draft: number) => (draft + 1));
 };
 ```
 
@@ -89,12 +89,12 @@ How to track which function changed your state? Before answering that question l
 
 ```typescript
 export function decrease() {
-  const [state, setState] = state("value");
+  const [value, setValue] = state("value");
 
   // If you are familiar with immer
   // we are using it for changing states.
   // Change state with immer, basics: https://immerjs.github.io/immer/produce/
-  setState((draft: number) => (draft - 1));
+  setValue((draft: number) => (draft - 1));
 };
 ```
 
