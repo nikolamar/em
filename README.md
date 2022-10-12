@@ -158,7 +158,7 @@ When you fire an event you can see the event's name, the state name that you use
   consoleLog
   states={states}
 >
-    <App/>
+  <App/>
 </Provider>
 ...
 
@@ -174,7 +174,7 @@ Now, if you use a persistent prop and if you have maps and sets this will not wo
   consoleLog
   states={states}
 >
-    <App/>
+  <App/>
 </Provider>
 ...
 ```
@@ -191,7 +191,7 @@ But still, it will not work because we are using a persistent prop with hash map
   serializeStates={serializeStates}
   deserializeStates={deserializeStates}
 >
-    <App/>
+  <App/>
 </Provider>
 ...
 ```
@@ -272,7 +272,7 @@ When it comes to performance logs you can turn them on with a prop `performanceL
   serializeStates={serializeStates}
   deserializeStates={deserializeStates}
 >
-    <App/>
+  <App/>
 </Provider>
 ...
 ```
