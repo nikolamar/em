@@ -39,7 +39,7 @@ export function state<T = any>(key: string, name?: string) {
               8
             )} %cevent: %c${name} %cstate: %c${key} %cvalue: %c${handleValue(
             value
-          )} %cnewvalue: %c${handleValue(newValue?.get(key))}`,
+          )} %cnewvalue: %c${handleValue(immValue)}`,
           "color: black",
           "color: grey",
           "color: black",
