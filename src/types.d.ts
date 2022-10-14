@@ -2,14 +2,14 @@ export type Callback = (state: any) => void;
 
 export type ProviderProps = {
   children: React.ReactNode;
-  states: Map<string, any>;
+  value: Map<string, any>;
   onChange?: Callback;
   consoleLog?: boolean;
   persistent?: boolean;
   enableMapSet?: boolean;
   performanceLog?: boolean;
-  serializeStates?: (states: any) => void;
-  deserializeStates?: (states: string) => Map<string, any>;
+  serializeStates?: ((states: any) => void) | null;
+  deserializeStates?: ((states: string) => Map<string, any>) | null;
 };
 
 export type SetStateByKey = (key: string, callback: Handler) => void;

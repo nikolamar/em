@@ -33,7 +33,7 @@ import { Provider } from "emstore";
 ...
 
 ...
-<Provider states={states}><App/></Provider>
+<Provider value={states}><App/></Provider>
 ...
 
 ```
@@ -140,7 +140,7 @@ Now let's log who changed our `value` state and add `consoleLog` prop to emstore
 ...
 <Provider
   consoleLog
-  states={states}
+  value={states}
 >
   <App/>
 </Provider>
@@ -156,7 +156,7 @@ When you fire an event you can see the event's name, the state name that you use
 <Provider
   persistent
   consoleLog
-  states={states}
+  value={states}
 >
   <App/>
 </Provider>
@@ -172,7 +172,7 @@ Now, if you use a persistent prop and if you have maps and sets this will not wo
   enableMapSet
   persistent
   consoleLog
-  states={states}
+  value={states}
 >
   <App/>
 </Provider>
@@ -187,7 +187,7 @@ But still, it will not work because we are using a persistent prop with hash map
   enableMapSet
   persistent
   consoleLog
-  states={states}
+  value={states}
   serializeStates={serializeStates}
   deserializeStates={deserializeStates}
 >
@@ -268,7 +268,7 @@ When it comes to performance logs you can turn them on with a prop `performanceL
   persistent
   consoleLog
   performanceLog
-  states={states}
+  value={states}
   serializeStates={serializeStates}
   deserializeStates={deserializeStates}
 >
