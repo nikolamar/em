@@ -208,7 +208,7 @@ export function Provider({
   }, [onChange, persistent, serializeStates]);
 
   /**
-   * Initialize states
+   *  React useEffetct() to initialize states
    */
   React.useEffect(() => {
     states = value;
@@ -216,15 +216,21 @@ export function Provider({
   }, [value]);
 
   /**
-   * React useEffetct() used to set ref and enable map and set in immer
+   * React useEffetct() used to enable immer Map and Set
+   */
+  React.useEffect(() => {
+    if (enableMapSet) enableImmerMapSet();
+  }, [enableMapSet]);
+
+  /**
+   * React useEffetct() used to set setRef function
    */
   React.useEffect(() => {
     setRef = () => {
       setState(state + 1);
       saveState();
     };
-    if (enableMapSet) enableImmerMapSet();
-  }, [state, setState, saveState, enableMapSet]);
+  }, [state, setState, saveState]);
 
   /**
    * React useEffetct() used to restore states from localStorage
