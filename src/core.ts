@@ -57,18 +57,6 @@ export function state<T = any>(key: string, name?: string) {
   ];
 }
 
-/**
- * Set state by key and callback function
- * @param {string} key - Set state by key from Map object that holds key-value pairs
- * @param {function} callback - Function, called the recipe, that is passed a draft to which we can apply straightforward mutations
- */
-export function setStateByKey(key: string, callback: Callback) {
-  const value = statesMapRef?.get(key);
-  const immValue = produce(value, callback);
-  const newValue = statesMapRef?.set(key, immValue);
-  setStatesRef(newValue);
-}
-
 let perfEnd = 0;
 let perfStart = 0;
 let perfTime = 0;
