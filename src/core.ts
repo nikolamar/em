@@ -12,8 +12,8 @@ const em: EM = {
 let timeoutStore = 0;
 let timeoutState = 0;
 
-let statesMapRef: Map<string, any>;
-let setStatesRef: (newState: Map<string, any>) => void;
+let states: Map<string, any>;
+let setRef: () => void;
 
 const EventContext = React.createContext({} as any);
 
@@ -23,12 +23,12 @@ const EventContext = React.createContext({} as any);
  * @param {string} name - Event name
  */
 export function state<T = any>(key: string, name?: string) {
-  const value = statesMapRef?.get(key);
+  const value = states?.get(key);
   return [
     value,
     (callback: Callback) => {
       const immValue = produce(value, callback);
-      const newValue = statesMapRef?.set(key, immValue);
+      states?.set(key, immValue);
 
       if (em.consoleLog) {
         console.log(
@@ -52,7 +52,12 @@ export function state<T = any>(key: string, name?: string) {
         );
       }
 
-      setStatesRef(newValue);
+      /**
+       * Prevents multiple renders of same value
+       */
+      if (immValue === value) return;
+
+      setRef();
     },
   ];
 }
@@ -78,8 +83,8 @@ export function withState<T = any>(component: React.FC<T>, keys: string[]) {
       perfStart = performance.now();
     }
 
-    const context = React.useContext(EventContext);
-    const states = keys.map((key) => context.get(key));
+    React.useContext(EventContext);
+    const dependency = keys.map((key) => states.get(key));
 
     if (em.performanceLog) {
       perfEnd = performance.now();
@@ -122,103 +127,154 @@ export function withState<T = any>(component: React.FC<T>, keys: string[]) {
        */
       return React.createElement(
         component as any,
-        { ...rest, states },
+        { ...rest, states: dependency },
         children
       );
-    }, states);
+    }, dependency);
   };
 }
 
+/**
+ * Context Provider for states
+ * @param {Map<String, *>} value - initial states
+ * @param {*} children - react components
+ * @param {callback} onChange - callback function when state is changed
+ * @param {boolean} consoleLog - enable console.log state changes
+ * @param {boolean} persistent - enable persistent states
+ * @param {boolean} enableMapSet - boolean to enable Map and Set in immer
+ * @param {boolean} performanceLog - enable performance log of states changes
+ * @param {callback} serializeStates - serialize states to string
+ * @param {callback} deserializeStates -deserialize states from string
+ */
 export function Provider({
-  states,
+  value,
   children,
   onChange,
   consoleLog = false,
   persistent = false,
   enableMapSet = false,
   performanceLog = false,
-  serializeStates,
-  deserializeStates,
+  serializeStates = null,
+  deserializeStates = null,
 }: ProviderProps) {
-  const [state, setState] = React.useState(states);
+  const [state, setState] = React.useState(0);
   const [ready, setReady] = React.useState(false);
 
-  const handleSet = React.useCallback(
-    (newState: Map<string, any>) => {
-      statesMapRef = new Map(newState);
-      setState(statesMapRef);
+  /**
+   * React useCallback() set function re-render components which is used with context
+   * and call onChange callback function
+   */
+  const saveState = React.useCallback(() => {
+    try {
+      if (onChange) {
+        if (typeof onChange !== "function") {
+          throw new Error("onChange prop in Provider is not a function");
+        }
 
-      if (typeof onChange === "function") {
         cancelAnimationFrame(timeoutState);
         timeoutState = requestAnimationFrame(() => {
-          onChange(statesMapRef);
+          onChange(states);
         });
       }
 
-      if (persistent) {
-        cancelAnimationFrame(timeoutStore);
-        timeoutStore = requestAnimationFrame(() => {
-          try {
-            if (!statesMapRef?.entries) {
-              throw Error("State reference is no a Map object");
-            }
+      if (!persistent) {
+        return;
+      }
 
-            if (typeof serializeStates === "function") {
-              const result = serializeStates(statesMapRef);
-              localStorage.setItem("emstate", JSON.stringify(result));
-              return;
-            }
+      cancelAnimationFrame(timeoutStore);
+      timeoutStore = requestAnimationFrame(() => {
+        if (!states?.entries) {
+          throw new Error("value prop should be a Map object");
+        }
 
-            localStorage.setItem(
-              "emstates",
-              JSON.stringify(Array.from(statesMapRef.entries()))
-            );
-          } catch (e) {
-            console.log("Error saving states on storage", e);
+        if (serializeStates) {
+          if (typeof serializeStates !== "function") {
+            throw new Error("serializeStates prop is not a function");
           }
-        });
-      }
-    },
-    [onChange, persistent, serializeStates]
-  );
 
-  React.useEffect(() => {
-    statesMapRef = states;
-    setStatesRef = handleSet;
-    if (enableMapSet) {
-      enableImmerMapSet();
+          const result = serializeStates(states);
+          localStorage.setItem("emstate", JSON.stringify(result));
+          return;
+        }
+
+        localStorage.setItem(
+          "emstates",
+          JSON.stringify(Array.from(states.entries()))
+        );
+      });
+    } catch (e) {
+      console.log("error saving states", e);
     }
+  }, [onChange, persistent, serializeStates]);
+
+  /**
+   * Initialize states
+   */
+  React.useEffect(() => {
+    states = value;
     setReady(true);
-  }, [states, handleSet, enableMapSet]);
+  }, [value]);
 
+  /**
+   * React useEffetct() used to set ref and enable map and set in immer
+   */
   React.useEffect(() => {
-    if (persistent) {
-      try {
-        const emstateString = localStorage.getItem("emstate");
+    setRef = () => {
+      setState(state + 1);
+      saveState();
+    };
+    if (enableMapSet) enableImmerMapSet();
+  }, [state, setState, saveState, enableMapSet]);
 
-        if (!emstateString) {
-          return;
-        }
-
-        if (typeof deserializeStates === "function") {
-          const result = deserializeStates(emstateString);
-          handleSet(result);
-          return;
-        }
-
-        const emParsedStates = JSON.parse(emstateString);
-
-        if (typeof emParsedStates === "object") {
-          handleSet(new Map(emParsedStates));
-        } else {
-          throw "Parsed state is not a object";
-        }
-      } catch (e) {
-        console.log("Error loading state from storage", e);
-      }
+  /**
+   * React useEffetct() used to restore states from localStorage
+   */
+  React.useEffect(() => {
+    if (!persistent) {
+      return;
     }
-  }, [persistent, handleSet, deserializeStates]);
 
+    try {
+      const emstateString = localStorage.getItem("emstate");
+
+      if (!emstateString) {
+        return;
+      }
+
+      /**
+       * Deserialize states from string if deserializeStates is provided and set states
+       * NOTE: this will work event if states are not serializable since user is overriding defaults
+       */
+      if (deserializeStates) {
+        if (typeof deserializeStates !== "function") {
+          throw new Error("deserializeStates prop is not a function");
+        }
+
+        const result = deserializeStates(emstateString);
+        states = new Map<string, any>(result);
+        return setState(state + 1);
+      }
+
+      /**
+       * If deserializeStates is not provided, set states from localStorage
+       * NOTE: this will not work if the states are not serializable
+       */
+      const emParsedStates = JSON.parse(emstateString);
+
+      if (typeof emParsedStates !== "object") {
+        throw new Error("parsed state is not a object");
+      }
+
+      states = new Map<string, any>(emParsedStates);
+      setState(state + 1);
+    } catch (e) {
+      console.log("error loading state from storage", e);
+    }
+  }, [deserializeStates, persistent]);
+
+  /**
+   * React useEffect() used to set config for emstore
+   */
   React.useEffect(() => {
     em.consoleLog = consoleLog;
     em.persistent = persistent;
@@ -233,6 +289,10 @@ export function Provider({
   return React.createElement(EventContext.Provider, { value: state }, children);
 }
 
+/**
+ * Function to handle console.log and different types of values
+ * @param {*} value - Value to be logged
+ */
 function handleValue(value: any) {
   if (typeof value === "string" && value !== "") return `"${value}"`;
   else if (value === "") return `""`;
