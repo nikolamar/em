@@ -9,9 +9,6 @@ const em: EM = {
   performanceLog: false,
 };
 
-let timeoutStore = 0;
-let timeoutState = 0;
-
 let states: Map<string, any>;
 let setRef: () => void;
 
@@ -67,6 +64,8 @@ let perfStart = 0;
 let perfTime = 0;
 let perfAccTime = 0;
 let perfTimeout = 0;
+let timeoutStore = 0;
+let timeoutState = 0;
 
 /**
  * ReactJS HOC — injects requested states from the second argument
