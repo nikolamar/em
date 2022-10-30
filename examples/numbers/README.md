@@ -1,4 +1,4 @@
-### Console log events
+### Numbers demo with event logs
 
 ![alt emstore](./src/assets/numbers.gif)
 

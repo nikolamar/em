@@ -131,8 +131,4 @@ const { Provider, useState, eventState } = createStore({ value: 0 }, {
 });
 ```
 
-That's it.
-
-Congratulations, you survived until the end, you are really something special! 😊
-
-Have a nice day and keep smiling!
+That's it. 🎉 Have a nice day and keep smiling! 😊
