@@ -15,3 +15,19 @@ For this demo, you will need `React Developer Tools` to see components updates: 
 Turn on `Highlight updates when components render`.
 
 ![alt emstore](./src/assets/highlight.png)
+
+#### Install
+
+Install dependencies.
+
+```
+npm install --legacy-peer-deps
+```
+
+#### Run
+
+Run in development mode.
+
+```
+npm run dev
+```
