@@ -16,6 +16,10 @@ npm i emstore immer
 
 ## Intro
 
+We will build an app that increases and decrease value and on every action, it logs the event into the console, and when you refresh it loads the state from local storage.
+
+![alt emstore](.assets/events.gif)
+
 First define just one state in the beginning, let's call this new state `value` and let initial value be 0. Each property in the object is state.
 
 ```typescript
@@ -96,6 +100,10 @@ const { Provider, useState, eventState } = createStore({ value: 0 }, {
   persist: true,
 });
 ```
+
+You can check the console and you'll see that emstore is saving every state change in local storage.
+
+![alt emstore](.assets/storage.gif)
 
 If your state is a `Map` or `Set` you need to enable in `immer` with `enableMapAndSet`.
 
