@@ -1,7 +1,5 @@
 import React from "react";
 import produce, { enableMapSet } from "immer";
-// types
-import type { EMStoreProps, Producer } from "./types";
 
 // constants
 const PREFIX = "EMStore";
@@ -11,7 +9,7 @@ const PREFIX = "EMStore";
  * @param {object} key - object with multiple states
  * @param {object} options - object to configure the store
  */
-export function createStore<T>(states: T, props: EMStoreProps = null) {
+export function createStore<T>(states: T, props: StoreProps = null) {
   if (props?.enableMapAndSet) {
     enableMapSet();
   }
@@ -177,3 +175,18 @@ function consoleLogChanges(
     "color: black"
   );
 }
+
+type Producer = (producer: any) => void;
+
+type StoreProps = {
+  persist?: boolean;
+  consoleLog?: boolean;
+  onSetState?: (key: string, prevState: any, nextState: any) => void;
+  enableMapAndSet?: boolean;
+  handleLocalStorageDataSave?: (
+    key: string,
+    prevState: any,
+    nextState: any
+  ) => void;
+  handleLocalStorageDataLoad?: (states: Record<string, any>) => void;
+} | null;
