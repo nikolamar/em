@@ -1,26 +1,16 @@
-export type Callback = (state: any) => void;
+import type { IProduce } from "immer/dist/internal";
 
-export type ProviderProps = {
-  children: React.ReactNode;
-  value: Map<string, any>;
-  onChange?: Callback;
+export type Producer = (producer: IProduce) => void;
+
+export type EMStoreProps = {
+  persist?: boolean;
   consoleLog?: boolean;
-  persistent?: boolean;
-  enableMapSet?: boolean;
-  performanceLog?: boolean;
-  serializeStates?: ((states: any) => void) | null;
-  deserializeStates?: ((states: string) => Map<string, any>) | null;
-};
-
-export type SetStateByKey = (key: string, callback: Handler) => void;
-
-export type EM = {
-  consoleLog?: boolean;
-  persistent?: boolean;
-  enableMapSet: boolean;
-  performanceLog?: boolean;
-};
-
-type CompWithStateProps = {
-  children?: React.ReactNode;
-};
+  onSetState?: (key: string, prevState: any, nextState: any) => void;
+  enableMapAndSet?: boolean;
+  handleLocalStorageDataSave?: (
+    key: string,
+    prevState: any,
+    nextState: any
+  ) => void;
+  handleLocalStorageDataLoad?: (states: Record<string, any>) => void;
+} | null;
