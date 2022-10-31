@@ -16,7 +16,7 @@ npm i emstore immer
 
 ## Intro
 
-We will build an app that increases and decrease value and on every action, it logs the event into the console, and when you refresh it loads the state from local storage.
+We will build an app [counter](./examples/basic/) that increases and decrease value and on every action, it logs the event into the console, and when you refresh it loads the state from local storage.
 
 ![alt emstore](.assets/events.gif)
 
@@ -138,5 +138,9 @@ const { Provider, useState, eventState } = createStore({ value: 0 }, {
   handleLocalStorageDataLoad: handleLocalStorageDataLoad, // your function
 });
 ```
+
+Examples: 
+- [counter](./examples/basic/)
+- [numbers](./examples/numbers/)
 
 That's it. 🎉 Have a nice day and keep smiling! 😊
