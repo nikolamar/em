@@ -139,8 +139,9 @@ const { Provider, useState, eventState } = createStore({ value: 0 }, {
 });
 ```
 
-Examples: 
+That's it. 🎉 Have a nice day and keep smiling! 😊
+
+## Examples
+
 - [counter](./examples/basic/)
 - [numbers](./examples/numbers/)
-
-That's it. 🎉 Have a nice day and keep smiling! 😊
