@@ -9,4 +9,5 @@ for (let i = 0; i < 119; i++) {
 
 export const { Provider, useState, eventState } = createStore(states, {
   consoleLog: true,
+  persist: true,
 });
