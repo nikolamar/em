@@ -12,7 +12,7 @@ export function increment() {
   id = setInterval(() => {
     const key = `counter${Math.floor(Math.random() * 120)}`;
     const [, setCounter] = state(key);
-    setCounter((num: number) => {
+    setCounter((num) => {
       if (num === 100) {
         return 0;
       }

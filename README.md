@@ -50,7 +50,7 @@ const state = eventState("increase");
 export function increase() {
   const [, setValue] = state("value");
 
-  setValue((value: number) => value++);
+  setValue((value) => value + 1);
 };
 ```
 
@@ -68,7 +68,7 @@ const state = eventState("decrease");
 export function decrease() {
   const [, setValue] = state("value");
 
-  setValue((value: number) => value--);
+  setValue((value) => value - 1);
 };
 ```
 

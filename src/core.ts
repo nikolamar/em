@@ -37,7 +37,7 @@ export function createStore<T>(states: T, props: StoreProps = null) {
 
   const set = <K extends keyof T>(
     key: K,
-    producer: Producer,
+    producer: (draft: T[K]) => any,
     event: string
   ) => {
     const prevState = states[key];
@@ -67,8 +67,11 @@ export function createStore<T>(states: T, props: StoreProps = null) {
   const state = <K extends keyof T>(
     key: K,
     event = "event"
-  ): [T[K], Producer] => {
-    return [states[key], (producer: Producer) => set(key, producer, event)];
+  ): [T[K], (callback: (draft: T[K]) => any) => void] => {
+    return [
+      states[key],
+      (producer: (draft: T[K]) => any) => set(key, producer, event),
+    ];
   };
 
   const eventState =
@@ -76,7 +79,9 @@ export function createStore<T>(states: T, props: StoreProps = null) {
     <K extends keyof T>(key: K) =>
       state(key, event);
 
-  const useState = <K extends keyof T>(key: K): [T[K], Producer] => {
+  const useState = <K extends keyof T>(
+    key: K
+  ): [T[K], (callback: (draft: T[K]) => any) => void] => {
     React.useSyncExternalStore(subscribe, () => states[key]);
     return state(key);
   };
@@ -175,8 +180,6 @@ function consoleLogChanges(
     "color: black"
   );
 }
-
-type Producer = (producer: any) => void;
 
 type StoreProps = {
   persist?: boolean;
