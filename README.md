@@ -51,7 +51,7 @@ Create event called `increase`.
 ```typescript
 const state = eventState("increase");
 
-export function increase() {
+function increase() {
   const [, setValue] = state("value");
 
   setValue((value) => value + 1);
@@ -69,7 +69,7 @@ Create event called `decrease`.
 ```typescript
 const state = eventState("decrease");
 
-export function decrease() {
+function decrease() {
   const [, setValue] = state("value");
 
   setValue((value) => value - 1);
