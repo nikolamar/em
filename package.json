@@ -8,10 +8,14 @@
   "scripts": {
     "test": "jest",
     "test:ci": "jest --coverage",
-    "lint": "eslint --cache --fix ./src",
+    "lint": "eslint -c .eslintrc.js --ext ts,tsx src",
+    "lint:fix": "eslint -c .eslintrc.js --fix --ext ts,tsx src",
     "watch:e6": "tsc --watch -p tsconfig.json",
     "watch:e5": "tsc --watch -p tsconfig.es5.json",
-    "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.es5.json"
+    "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.es5.json",
+    "prepare": "husky install",
+    "precommit": "npm run lint && npm run lint:fix",
+    "prepush": "npm run lint"
   },
   "author": "Nikola Marjanovic <nikolamar@gmail.com>",
   "license": "MIT",
