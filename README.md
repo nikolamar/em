@@ -139,6 +139,22 @@ const { Provider, useState, eventState } = createStore({ value: 0 }, {
 });
 ```
 
+If for some reason you need to revert the state after some time to the previous state, something like time to live (TTL) this is how you are going to use it.
+
+```typescript
+const { Provider, useState, eventState } = createStore({ value: 0 }, {
+  consoleLog: true,
+  persist: true,
+  enableMapAndSet: true,
+  onSetState: onSetState, // your function
+  handleLocalStorageDataSave: handleLocalStorageDataSave, // your function
+  handleLocalStorageDataLoad: handleLocalStorageDataLoad, // your function
+  ttl: {
+    value: 3 * 1000 // 3 seconds
+  },
+});
+```
+
 That's it. 🎉 Have a nice day and keep smiling! 😊
 
 ## Examples
