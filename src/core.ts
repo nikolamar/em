@@ -4,6 +4,9 @@ import produce, { enableMapSet } from "immer";
 // constants
 const PREFIX = "EMStore";
 
+// timeouts
+const timeouts: Record<any, any> = {};
+
 /**
  * Creates a new store and returns a react provider and a hook function and an event state function
  * @param {object} key - object with multiple states
@@ -59,6 +62,13 @@ export function createStore<T>(states: T, props: StoreProps = null) {
 
     if (typeof props?.onSetState === "function") {
       props.onSetState(key as string, prevState, nextState);
+    }
+
+    if (typeof props?.ttl === "object" && props.ttl[key]) {
+      timeouts[key] = setTimeout(() => {
+        states[key] = produce(nextState, () => prevState);
+        subscribers.forEach((callback) => callback());
+      }, props?.ttl[key]);
     }
 
     subscribers.forEach((callback) => callback());
@@ -182,6 +192,7 @@ function consoleLogChanges(
 }
 
 type StoreProps = {
+  ttl?: Record<any, number>;
   persist?: boolean;
   consoleLog?: boolean;
   onSetState?: (key: string, prevState: any, nextState: any) => void;
